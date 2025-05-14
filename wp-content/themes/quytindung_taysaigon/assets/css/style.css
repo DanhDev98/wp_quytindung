@@ -1800,3 +1800,65 @@ ul li {
 .submit-btn:hover {
     background-color: #212529;
 }
+/* tintuc */
+.section-title {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #a12727;
+        }
+
+        .news-featured img,
+        .carousel-item img {
+            object-fit: cover;
+        }
+
+        .news-featured .small-news img {
+            height: 80px;
+            width: 100px;
+            object-fit: cover;
+        }
+
+        .small-news-title {
+            font-size: 15px;
+            margin-bottom: 0;
+        }
+
+        .card-title {
+            font-size: 17px;
+        }
+
+        .carousel-indicators {
+            position: absolute;
+            bottom: -30px;
+        }
+
+        .carousel-indicators button {
+            background-color: #a12727;
+        }
+
+        .filter-year {
+            margin-bottom: 30px;
+            max-width: 200px;
+        }
+
+        .carousel-item {
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .small-news {
+            border-radius: 8px;
+        }
+
+        .card-body {
+            padding: 1.2rem;
+        }
+
+        .carousel-item img {
+            max-height: 220px;
+            object-fit: cover;
+        }
+
+        .card-text {
+            font-size: 14px;
+        }

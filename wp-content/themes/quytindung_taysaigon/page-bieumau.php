@@ -1,5 +1,5 @@
 <?php
-/* Template Name: Trang Điều lệ*/
+/* Template Name: Trang Biểu mẫu */
 get_header();  // Gọi file header.php
 ?>
 <div class="form-container">

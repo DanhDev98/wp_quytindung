@@ -121,16 +121,13 @@
                         <div class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Hỗ trợ</a>
                             <div class="dropdown-menu bg-light rounded-0 rounded-bottom m-0">
-                                <a href="cauhoi.html" class="dropdown-item">Câu hỏi thường gặp</a>
-                                <a href="bieumau.html" class="dropdown-item">Biểu mẫu</a>
-                                <a href="contact.html" class="dropdown-item">Liên hệ</a>
+                                <a href="<?php echo get_permalink(get_page_by_path('cau-hoi-thuong-gap')); ?>" class="dropdown-item">Câu hỏi thường gặp</a>
+                                <a href="<?php echo get_permalink(get_page_by_path('bieu-mau')); ?>" class="dropdown-item">Biểu mẫu</a>
+                                <a href="<?php echo get_permalink(get_page_by_path('lien-he')); ?>" class="dropdown-item">Liên hệ</a>
                             </div>
                         </div>
-                        <div class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Tin tức - Sự kiện</a>
-                            <div class="dropdown-menu bg-light rounded-0 rounded-bottom m-0">
-                                <a href="tintuc.html" class="dropdown-item">Văn bản Pháp Luật</a>
-                            </div>
+                        <div class="nav-item ">
+                            <a href="<?php echo get_permalink(get_page_by_path('tin-tuc')); ?>" class="nav-link ">Tin tức - Sự kiện</a>
                         </div>
                     </div>
                     <div class="ms-auto d-none d-lg-block">
