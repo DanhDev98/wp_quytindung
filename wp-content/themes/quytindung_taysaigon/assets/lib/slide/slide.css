@@ -1,0 +1,43 @@
+.carousel .carousel-indicators {
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: auto;
+    width: 80px;
+    flex-direction: column;
+    margin: 0;
+    margin-left: 3rem;
+}
+
+.carousel .carousel-indicators [data-bs-target] {
+    width: 70px;
+    height: 70px;
+    text-indent: 0;
+    margin: 5px 0;
+    border: 2px solid #FFFFFF;
+    overflow: hidden;
+}
+
+.carousel .carousel-indicators [data-bs-target] img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+@media (max-width: 992px) {
+    
+
+    .carousel .carousel-indicators [data-bs-target] {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+@media (max-width: 768px) {
+   
+    .carousel .carousel-indicators [data-bs-target] {
+        width: 50px;
+        height: 50px;
+    }
+
+}
