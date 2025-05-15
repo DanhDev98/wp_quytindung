@@ -111,7 +111,19 @@
         });
     };
 
+    // tintuc
+    // document.addEventListener("DOMContentLoaded", function () {
+    //     const wordLimit = 20;
+    //     const paragraphs = document.querySelectorAll("p");
 
+    //     paragraphs.forEach(p => {
+    //         const words = p.innerText.trim().split(/\s+/);
+    //         if (words.length > wordLimit) {
+    //             const truncated = words.slice(0, wordLimit).join(" ") + "...";
+    //             p.innerText = truncated;
+    //         }
+    //     });
+    // });
 
     // dieule img
     const container = document.getElementById("pages");

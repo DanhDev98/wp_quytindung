@@ -1,115 +1,109 @@
-<!-- Testimonial Start -->
-<div class="container-fluid pt-6 pb-6">
-    <div class="container">
-        <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
-            <h1 class="display-6 text-uppercase mb-5">Khách hàng nói gì về chúng tôi</h1>
-        </div>
-        <div class="row g-5 align-items-center">
-            <div class="col-lg-5 wow fadeInUp" data-wow-delay="0.3s">
-                <div class="testimonial-img">
-                    <div class="animated flip infinite">
-                        <img class="img-fluid"
-                            src="<?php echo get_template_directory_uri(); ?>/assets/img/testimonial-1.jpg" alt="">
-                    </div>
-                    <div class="animated flip infinite">
-                        <img class="img-fluid"
-                            src="<?php echo get_template_directory_uri(); ?>/assets/img/testimonial-2.jpg" alt="">
-                    </div>
-                    <div class="animated flip infinite">
-                        <img class="img-fluid"
-                            src="<?php echo get_template_directory_uri(); ?>/assets/img/testimonial-3.jpg" alt="">
-                    </div>
-                    <div class="animated flip infinite">
-                        <img class="img-fluid"
-                            src="<?php echo get_template_directory_uri(); ?>/assets/img/testimonial-4.jpg" alt="">
-                    </div>
+<?php
+$has_feedbacks = new WP_Query([
+    'post_type' => 'feedbacks',
+    'posts_per_page' => 1,
+    'post_status' => 'publish',
+]);
 
-                </div>
+if ($has_feedbacks->have_posts()):
+    ?>
+    <!-- Testimonial Start -->
+    <div class="container-fluid pt-6 pb-6">
+        <div class="container">
+            <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
+                <h1 class="display-6 text-uppercase mb-5">Khách hàng nói gì về chúng tôi</h1>
             </div>
-            <div class="col-lg-7 wow fadeInUp" data-wow-delay="0.5s">
-                <div class="owl-carousel testimonial-carousel">
-                    <div class="testimonial-item">
-                        <div class="d-flex align-items-center mb-4">
-                            <img class="img-fluid"
-                                src="<?php echo get_template_directory_uri(); ?>/assets/img/testimonial-1.jpg" alt="">
-                            <div class="ms-3">
-                                <div class="mb-2">
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="far fa-star text-primary"></i>
-                                </div>
-                                <h5 class="text-uppercase">Võ Văn Tám</h5>
-                                <span>Kĩ sư xây dựng</span>
-                            </div>
-                        </div>
-                        <p class="fs-5">Dịch vụ tốt, đội ngữ tư vấn nhiệt tình.
-                        </p>
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-5 wow fadeInUp" data-wow-delay="0.3s">
+                    <div class="testimonial-img">
+                        <?php
+                        $avatar_query = new WP_Query([
+                            'post_type' => 'feedback',
+                            'posts_per_page' => 4,
+                            'orderby' => 'rand',
+                            'meta_query' => [
+                                [
+                                    'key' => 'feedback_avatar',
+                                    'compare' => 'EXISTS',
+                                ],
+                            ],
+                        ]);
+                        if ($avatar_query->have_posts()):
+                            while ($avatar_query->have_posts()):
+                                $avatar_query->the_post();
+                                $avatar = get_field('feedback_avatar');
+                                if ($avatar):
+                                    ?>
+                                    <div class="animated flip infinite">
+                                        <img class="img-fluid rounded-circle" src="<?php echo esc_url($avatar['url']); ?>"
+                                            alt="<?php the_title_attribute(); ?>">
+                                    </div>
+                                    <?php
+                                endif;
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+                        ?>
                     </div>
-                    <div class="testimonial-item">
-                        <div class="d-flex align-items-center mb-4">
-                            <img class="img-fluid"
-                                src="<?php echo get_template_directory_uri(); ?>/assets/img/testimonial-2.jpg" alt="">
-                            <div class="ms-3">
-                                <div class="mb-2">
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
+                </div>
+                <div class="col-lg-7 wow fadeInUp" data-wow-delay="0.5s">
+                    <div class="owl-carousel testimonial-carousel">
+                        <?php
+                        $testimonial_query = new WP_Query([
+                            'post_type' => 'feedbacks',
+                            'posts_per_page' => 6,
+                            'orderby' => 'date',
+                            'order' => 'DESC',
+                        ]);
+                        if ($testimonial_query->have_posts()):
+                            while ($testimonial_query->have_posts()):
+                                $testimonial_query->the_post();
+                                $avatar = get_field('feedback_avatar');
+                                $position = get_field('feedback_position');
+                                $rating = intval(get_field('feedback_rating'));
+                                $contact = get_field('feedback_contact');
+                                $content = get_field('feedback_content');
+                                ?>
+                                <div class="testimonial-item">
+                                    <div class="d-flex align-items-center mb-4">
+                                        <?php if ($avatar): ?>
+                                            <img class="img-fluid rounded-circle" style="width: 60px; height: 60px; object-fit: cover;"
+                                                src="<?php echo esc_url($avatar['url']); ?>" alt="<?php the_title_attribute(); ?>">
+                                        <?php endif; ?>
+                                        <div class="ms-3">
+                                            <div class="mb-2">
+                                                <?php for ($i = 1; $i <= 5; $i++): ?>
+                                                    <i class="<?php echo ($i <= $rating) ? 'fas' : 'far'; ?> fa-star text-primary"></i>
+                                                <?php endfor; ?>
+                                            </div>
+                                            <h5 class="text-uppercase"><?php the_title(); ?></h5>
+                                            <?php if ($position): ?>
+                                                <span><?php echo esc_html($position); ?></span><br>
+                                            <?php endif; ?>
+                                            <?php if ($contact): ?>
+                                                <span class="mt-2"><strong><?php echo esc_html($contact); ?></strong></span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                    <p class="fs-5"><?php echo esc_html($content); ?></p>
                                 </div>
-                                <h5 class="text-uppercase">Nguyễn Thị Mai</h5>
-                                <span>Kinh doanh tự do</span>
-                            </div>
-                        </div>
-                        <p class="fs-5">Cảm ơn đội ngũ nhân viên đã giúp tôi vượt qua giai đoạn khó khăn về kinh tế
-                        </p>
-                    </div>
-                    <div class="testimonial-item">
-                        <div class="d-flex align-items-center mb-4">
-                            <img class="img-fluid"
-                                src="<?php echo get_template_directory_uri(); ?>/assets/img/testimonial-3.jpg" alt="">
-                            <div class="ms-3">
-                                <div class="mb-2">
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="far fa-star text-primary"></i>
-                                </div>
-                                <h5 class="text-uppercase">Chú Tài</h5>
-                                <span>Nhân viên văn phòng</span>
-                            </div>
-                        </div>
-                        <p class="fs-5">Dịch vụ rất tốt.
-                        </p>
-                    </div>
-                    <div class="testimonial-item">
-                        <div class="d-flex align-items-center mb-4">
-                            <img class="img-fluid"
-                                src="<?php echo get_template_directory_uri(); ?>/assets/img/testimonial-4.jpg" alt="">
-                            <div class="ms-3">
-                                <div class="mb-2">
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="fas fa-star text-primary"></i>
-                                    <i class="far fa-star text-primary"></i>
-                                </div>
-                                <h5 class="text-uppercase">Võ Thị Như Quỳnh</h5>
-                                <span>Nhân viên quỹ</span>
-                            </div>
-                        </div>
-                        <p class="fs-5">Lãi suất tốt, minh bạch rõ ràng.
-                        </p>
+                                <?php
+                            endwhile;
+                            wp_reset_postdata();
+                        endif;
+                        ?>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<!-- Testimonial End -->
+    <!-- Testimonial End -->
+    <?php
+endif;
+?>
+
+
+
 
 
 <!-- Newsletter Start -->
@@ -233,7 +227,7 @@
 <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
 <!-- Zalo Button -->
-<a href="https://zalo.me/yourzalonumber" target="_blank" class="zalo-btn">
+<a href="https://zalo.me/1363234381175033899" target="_blank" class="zalo-btn">
     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Icon_of_Zalo.svg/2048px-Icon_of_Zalo.svg.png"
         alt="Zalo CSKH">
 </a>

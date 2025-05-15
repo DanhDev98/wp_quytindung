@@ -32,14 +32,15 @@ get_header();  // Gọi file header.php
                             placeholder="example@gmail.com / 0909xxxxxx">
                     </div>
                     <div class="mb-3 wow fadeInRight" data-wow-delay="0.4s">
-                        <label for="type" class="form-label">Loại góp ý</label>
+                        <label for="type" class="form-label">Vị trí</label>
                         <select class="form-select" id="type" required>
-                            <option value="">-- Chọn loại --</option>
-                            <option value="Khen ngợi">Khen ngợi</option>
-                            <option value="Phản ánh">Phản ánh</option>
-                            <option value="Hỗ trợ">Yêu cầu hỗ trợ</option>
+                            <option value="">-- Chọn vị trí --</option>
+                            <option value="Khách hàng">Khách hàng</option>
+                            <option value="Nhân viên">Nhân viên</option>
+                            <option value="Người tiêu dùng">Người tiêu dùng</option>
                             <option value="Khác">Khác</option>
                         </select>
+
                     </div>
                     <div class="mb-3 wow fadeInRight" data-wow-delay="0.45s">
                         <label class="form-label d-block">Đánh giá</label>
@@ -69,6 +70,62 @@ get_header();  // Gọi file header.php
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("feedbackForm");
+        const successMessage = document.getElementById("successMessage");
+        successMessage.style.display = "none";
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const data = {
+                action: "submit_feedback",
+                name: document.getElementById("name").value,
+                contact: document.getElementById("contact").value,
+                position: document.getElementById("type").value,
+                rating: document.getElementById("rating").value,
+                message: document.getElementById("message").value
+            };
+
+            fetch("<?php echo admin_url('admin-ajax.php'); ?>", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams(data)
+            })
+                .then(res => res.text())
+                .then(response => {
+                    if (response === "success") {
+                        form.reset();
+                        successMessage.style.display = "block";
+                        // Reset sao
+                        document.querySelectorAll(".star").forEach(star => star.classList.remove(
+                            "text-warning"));
+                        document.getElementById("rating").value = 0;
+                    }
+                });
+        });
+
+        // Hiệu ứng đánh giá sao
+        document.querySelectorAll(".star-rating .star").forEach(star => {
+            star.addEventListener("click", function () {
+                const rating = this.getAttribute("data-value");
+                document.getElementById("rating").value = rating;
+                document.querySelectorAll(".star").forEach(s => {
+                    s.classList.remove("text-warning");
+                    if (parseInt(s.getAttribute("data-value")) <= rating) {
+                        s.classList.add("text-warning");
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+
 <?php
 get_footer();  // Gọi file footer.php
 ?>

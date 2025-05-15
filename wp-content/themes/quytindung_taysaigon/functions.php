@@ -56,9 +56,47 @@ function tinds_enqueue_scripts()
     wp_enqueue_script('cauhoi', get_template_directory_uri() . '/assets/js/cauhoi.js', array('jquery-cdn'), null, true);
 }
 add_action('wp_enqueue_scripts', 'tinds_enqueue_scripts');
+add_theme_support('post-thumbnails');
 
+add_action('wp_ajax_submit_feedback', 'handle_submit_feedback');
+add_action('wp_ajax_nopriv_submit_feedback', 'handle_submit_feedback');
 
+function handle_submit_feedback()
+{
+    $name = sanitize_text_field($_POST['name']);
+    $contact = sanitize_text_field($_POST['contact']);
+    $position = sanitize_text_field($_POST['position']);
+    $rating = intval($_POST['rating']);
+    $message = sanitize_textarea_field($_POST['message']);
 
+    // Avatar ngẫu nhiên
+    $avatars = [
+        get_template_directory_uri() . '/assets/img/testimonial-1.jpg',
+        get_template_directory_uri() . '/assets/img/testimonial-2.jpg',
+        get_template_directory_uri() . '/assets/img/testimonial-3.jpg',
+        get_template_directory_uri() . '/assets/img/testimonial-4.jpg',
+    ];
+    $random_avatar = $avatars[array_rand($avatars)];
 
+    // Tạo bài post
+    $post_id = wp_insert_post([
+        'post_type' => 'feedback',
+        'post_status' => 'publish',
+        'post_title' => $name,
+    ]);
+
+    if ($post_id) {
+        update_field('feedback_contact', $contact, $post_id);
+        update_field('feedback_position', $position, $post_id);
+        update_field('feedback_rating', $rating, $post_id);
+        update_field('feedback_content', $message, $post_id);
+        update_field('feedback_avatar', $random_avatar, $post_id);
+        echo "success";
+    } else {
+        echo "error";
+    }
+
+    wp_die();
+}
 
 // Các đoạn code khác của bạn ở đây
