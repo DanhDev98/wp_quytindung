@@ -25,8 +25,8 @@ $banners = array_filter([$banner1, $banner2, $banner3]);
             </div>
             <div class="carousel-inner">
                 <?php foreach ($banners as $index => $img_url): ?>
-                    <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
-                        <img class="w-100" src="<?php echo esc_url($img_url); ?>" alt="Slide <?php echo $index + 1; ?>">
+                    <div class="carousel-item banner_img <?php echo $index === 0 ? 'active' : ''; ?>">
+                        <img class="w-100 img-banner" src="<?php echo esc_url($img_url); ?>" alt="Slide <?php echo $index + 1; ?>">
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -316,90 +316,58 @@ $complete = get_field('completion_percent');
 
 
 <!-- Appoinment Start -->
-<div class="container-fluid appoinment mt-6 mb-6 py-5 wow fadeIn" data-wow-delay="0.1s">
+<div class="container-fluid mt-6 mb-6 py-5 wow fadeIn" 
+     style="background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('<?php the_field('appoinment_background'); ?>') left center no-repeat; background-size: cover;" 
+     data-wow-delay="0.1s">
+
     <div class="container pt-5">
         <div class="row gy-5 gx-0">
+            <!-- Cột Thông tin -->
             <div class="col-lg-6 pe-lg-5 wow fadeIn" data-wow-delay="0.3s">
-                <h1 class="display-6 text-uppercase text-white mb-4">CHÚNG TÔI ĐỒNG HÀNH TÀI CHÍNH & PHÁT TRIỂN CỘNG
-                    ĐỒNG
+                <h1 class="display-6 text-uppercase text-white mb-4">
+                    <?php the_field('heading_title'); ?>
                 </h1>
-                <p class="text-white mb-5 wow fadeIn" data-wow-delay="0.4s">Giải pháp tài chính linh hoạt, nhanh
-                    chóng và an toàn dành cho mọi thành viên.
-                    Chúng tôi cam kết đồng hành cùng sự phát triển kinh tế địa phương thông qua các sản phẩm tín
-                    dụng thiết thực, lãi suất hợp lý và dịch vụ tận tâm.</p>
+
+                <p class="text-white mb-5 wow fadeIn" data-wow-delay="0.4s">
+                    <?php the_field('heading_description'); ?>
+                </p>
+
+                <!-- Địa chỉ văn phòng -->
                 <div class="d-flex align-items-start wow fadeIn" data-wow-delay="0.5s">
                     <div class="btn-lg-square bg-white">
                         <i class="bi bi-geo-alt text-dark fs-3"></i>
                     </div>
                     <div class="ms-3">
                         <h6 class="text-white text-uppercase">ĐỊA CHỈ VĂN PHÒNG</h6>
-                        <span class="text-white">2276 Vĩnh Lộc, Ấp 4, X. Vĩnh Lộc B, H. Bình Chánh</span>
+                        <span class="text-white"><?php the_field('office_address'); ?></span>
                     </div>
                 </div>
+
                 <hr class="bg-body">
+
+                <!-- Thời gian làm việc -->
                 <div class="d-flex align-items-start wow fadeIn" data-wow-delay="0.6s">
                     <div class="btn-lg-square bg-white">
                         <i class="bi bi-clock text-dark fs-3"></i>
                     </div>
                     <div class="ms-3">
                         <h6 class="text-white text-uppercase">THỜI GIAN LÀM VIỆC</h6>
-                        <span class="text-white">Thứ 2 – Thứ 6: 7h30 – 17h00
-                            Thứ 7: 7h30 – 11h30</span>
+                        <span class="text-white"><?php the_field('office_hours'); ?></span>
                     </div>
                 </div>
             </div>
+
+            <!-- Cột Form -->
             <div class="col-lg-6 mb-n5 wow fadeIn" data-wow-delay="0.7s">
-                <div class="bg-white p-5">
-                    <h2 class="text-uppercase mb-4">ĐĂNG KÝ TƯ VẤN TRỰC TUYẾN</h2>
-                    <div class="row g-3">
-                        <div class="col-sm-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control border-0 bg-light" id="name"
-                                    placeholder="Your Name">
-                                <label for="name">Họ và tên</label>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-floating">
-                                <input type="email" class="form-control border-0 bg-light" id="mail"
-                                    placeholder="Your Email">
-                                <label for="mail">Email của bạn </label>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-floating">
-                                <input type="text" class="form-control border-0 bg-light" id="mobile"
-                                    placeholder="Your Mobile">
-                                <label for="mobile">Số điện thoại</label>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-floating">
-                                <select class="form-select border-0 bg-light" id="service">
-                                    <option selected>Vay vốn cá nhân</option>
-                                    <option value="">Gửi tiết kiệm</option>
-                                    <option value="">Chuyển khoản nội bộ</option>
-                                </select>
-                                <label for="service">Chọn dịch vụ</label>
-                            </div>
-                        </div>
-                        <div class="col-12">
-                            <div class="form-floating">
-                                <textarea class="form-control border-0 bg-light" placeholder="Leave a message here"
-                                    id="message" style="height: 130px"></textarea>
-                                <label for="message">Nội dung bạn muốn gửi</label>
-                            </div>
-                        </div>
-                        <div class="col-12 text-center">
-                            <button class="btn btn-primary w-100 py-3" type="submit">Đăng ký</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <?php echo do_shortcode('[contact-form-7 id="a20e42f" title="Form Đăng ký tư vấn"]'); ?>
+</div>
+
+            <!-- End cột form -->
         </div>
     </div>
 </div>
 <!-- Appoinment End -->
+
 
 
 <!-- Team Start -->

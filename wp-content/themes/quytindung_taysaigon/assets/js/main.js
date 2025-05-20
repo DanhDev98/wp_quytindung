@@ -105,6 +105,22 @@
         });
     });
 
+    // document.addEventListener('DOMContentLoaded', function () {
+    //     const btn = document.getElementById('zalo-popup-btn');
+    //     const widget = document.querySelector('.zalo-chat-widget');
+
+    //     btn.addEventListener('click', function () {
+    //         if (widget.style.display === 'none') {
+    //             widget.style.display = 'block';
+    //         } else {
+    //             widget.style.display = 'none';
+    //         }
+    //     });
+    // });
+
+
+
+
     function highlightStars(rating) {
         stars.forEach((star, i) => {
             star.classList.toggle('selected', i < rating);

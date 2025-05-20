@@ -10,6 +10,10 @@ function quytindungtaysaigon_setup()
 }
 add_action('after_setup_theme', 'quytindungtaysaigon_setup');
 
+add_filter( 'http_request_timeout', function( $timeout ) {
+    return 30; // tăng thời gian timeout lên 30 giây
+});
+
 function tinds_enqueue_assets()
 {
     // Google Fonts
@@ -54,6 +58,13 @@ function tinds_enqueue_scripts()
     // Main JS
     wp_enqueue_script('main', get_template_directory_uri() . '/assets/js/main.js', array('jquery-cdn'), null, true);
     wp_enqueue_script('cauhoi', get_template_directory_uri() . '/assets/js/cauhoi.js', array('jquery-cdn'), null, true);
+     wp_enqueue_script(
+        'zalo-sdk', 
+        'https://sp.zalo.me/plugins/sdk.js', 
+        array(), 
+        null, 
+        true // Chèn vào footer
+    );
 }
 add_action('wp_enqueue_scripts', 'tinds_enqueue_scripts');
 add_theme_support('post-thumbnails');
@@ -63,13 +74,13 @@ add_action('wp_ajax_nopriv_submit_feedback', 'handle_submit_feedback');
 
 function handle_submit_feedback()
 {
-    $name = sanitize_text_field($_POST['name']);
-    $contact = sanitize_text_field($_POST['contact']);
+    $name     = sanitize_text_field($_POST['name']);
+    $contact  = sanitize_text_field($_POST['contact']);
     $position = sanitize_text_field($_POST['position']);
-    $rating = intval($_POST['rating']);
-    $message = sanitize_textarea_field($_POST['message']);
+    $rating   = intval($_POST['rating']);
+    $message  = sanitize_textarea_field($_POST['message']);
 
-    // Avatar ngẫu nhiên
+    // Ảnh avatar ngẫu nhiên (dạng URL)
     $avatars = [
         get_template_directory_uri() . '/assets/img/testimonial-1.jpg',
         get_template_directory_uri() . '/assets/img/testimonial-2.jpg',
@@ -78,11 +89,11 @@ function handle_submit_feedback()
     ];
     $random_avatar = $avatars[array_rand($avatars)];
 
-    // Tạo bài post
+    // Tạo bài viết mới cho feedback
     $post_id = wp_insert_post([
-        'post_type' => 'feedback',
+        'post_type'   => 'feedback',
         'post_status' => 'publish',
-        'post_title' => $name,
+        'post_title'  => $name,
     ]);
 
     if ($post_id) {
@@ -90,7 +101,7 @@ function handle_submit_feedback()
         update_field('feedback_position', $position, $post_id);
         update_field('feedback_rating', $rating, $post_id);
         update_field('feedback_content', $message, $post_id);
-        update_field('feedback_avatar', $random_avatar, $post_id);
+        update_field('feedback_avatar', $random_avatar, $post_id); // Lưu ảnh URL
         echo "success";
     } else {
         echo "error";
@@ -99,4 +110,64 @@ function handle_submit_feedback()
     wp_die();
 }
 
-// Các đoạn code khác của bạn ở đây
+
+add_action('template_redirect', function () {
+    if (isset($_POST['submit_newsletter'])) {
+        $email = sanitize_email($_POST['custom_newsletter_email']);
+
+        if (is_email($email)) {
+            try {
+                $mailpoet_api = \MailPoet\API\API::MP('v1');
+
+                try {
+                    // Kiểm tra xem subscriber đã tồn tại chưa
+                    $subscriber = $mailpoet_api->getSubscriber($email);
+
+                    // Nếu có → thêm vào list nếu chưa có
+                    $mailpoet_api->subscribeToLists($subscriber['id'], [4]);
+                } catch (Exception $e) {
+                    // Nếu không tồn tại → thêm mới
+                    $mailpoet_api->addSubscriber([
+                        'email' => $email,
+                        'lists' => [4],
+                        'first_name' => '',
+                        'last_name' => ''
+                    ]);
+                    // Kiểm tra xem subscriber đã tồn tại chưa
+                    $subscriber = $mailpoet_api->getSubscriber($email);
+
+                    // Nếu có → thêm vào list nếu chưa có
+                    $mailpoet_api->subscribeToLists($subscriber['id'], [4]);
+
+                }
+
+                wp_redirect(home_url('/thank-you/'));
+                exit;
+            } catch (Exception $e) {
+                error_log('MailPoet error: ' . $e->getMessage());
+            }
+        }
+    }
+});
+
+if (function_exists('acf_add_options_page')) {
+    acf_add_options_page(array(
+        'page_title'    => 'Cài đặt Topbar',
+        'menu_title'    => 'Topbar',
+        'menu_slug'     => 'topbar-settings',
+        'capability'    => 'edit_posts',
+        'redirect'      => false
+    ));
+}
+
+
+
+
+
+
+
+
+
+
+
+
