@@ -3,31 +3,44 @@
 get_header();  // Gọi file header.php
 ?>
 <div class="container py-5">
-    <img src="https://quytindungthaihoa.vn/wp-content/uploads/2020/09/unnamed-13-768x804.jpg" alt="Tra cứu"
-        class="image-banner mx-auto d-block wow fadeInDown" data-wow-delay="0.7s" style="">
-    <div class="guide-box text-center wow fadeInUp" data-wow-delay="0.7s">
-        <div class="guide-title"><i class="fas fa-search-dollar icon-box"></i> HƯỚNG DẪN</div>
-        <div class="guide-subtitle">Tra cứu tiền gửi tiết kiệm</div>
-
-        <?php for ($i = 1; $i <= 3; $i++): 
-    $title = get_field("sms_title_$i");
-    $cmd = get_field("sms_command_$i");
-    if ($title && $cmd): ?>
-        <div class="instruction">
-            <i class="fas fa-star text-warning"></i> <strong><?php echo esc_html($title); ?>:</strong><br>
-            <span class="cmd"><?php echo esc_html($cmd); ?></span> → Gửi
-            <strong><?php the_field('sms_number'); ?></strong>
-        </div>
-        <?php endif; endfor; ?>
-
-        <?php if (get_field('sms_number')): ?>
-        <div class="mt-4 footer-number">
-            ✨ GỬI ĐẾN TỔNG ĐÀI: <span style="color: #ffc107"><?php the_field('sms_number'); ?></span>
-        </div>
-        <?php endif; ?>
-
+    <div id="tra-cuu-container" class="tra-cuu-wrapper"
+        style="max-width:500px;margin:auto;padding:20px;border-radius:10px;background:#f9f9f9;box-shadow:0 0 10px rgba(0,0,0,0.1)">
+        <h2 style="text-align:center;color:#333;">🔍 Tra Cứu Tài Khoản Tiết Kiệm</h2>
+        <input type="text" id="mstk" placeholder="Nhập Mã Số Tài Khoản hoặc CCCD"
+            style="width:100%;padding:10px;margin:10px 0;border:1px solid #ccc;border-radius:5px;" />
+        <button onclick="traCuuTaiKhoan()"
+            style="width:100%;padding:10px;background:#0073aa;color:white;border:none;border-radius:5px;cursor:pointer;">Tra
+            cứu</button>
+        <div id="tra-cuu-ket-qua" style="margin-top:20px;font-size:15px;"></div>
     </div>
+
 </div>
+
+<script>
+    function traCuuTaiKhoan() {
+        var input = document.getElementById('mstk').value;
+        var resultDiv = document.getElementById('tra-cuu-ket-qua');
+        resultDiv.innerHTML = "⏳ Đang tra cứu...";
+
+        fetch('<?php echo admin_url("admin-ajax.php"); ?>', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams({
+                'action': 'tra_cuu_tai_khoan',
+                'query': input
+            })
+        })
+            .then(response => response.text())
+            .then(data => {
+                resultDiv.innerHTML = data;
+            })
+            .catch(error => {
+                resultDiv.innerHTML = "❌ Lỗi xảy ra: " + error;
+            });
+    }
+</script>
 <?php
 get_footer();  // Gọi file footer.php
 ?>

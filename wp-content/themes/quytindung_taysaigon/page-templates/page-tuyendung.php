@@ -10,59 +10,63 @@ get_header();  // Gọi file header.php
 
 <div class="d-flex flex-wrap justify-content-center container">
     <?php
-$job_query = new WP_Query([
-    'post_type' => 'job',  // post type là job
-    'posts_per_page' => -1,
-    'orderby' => 'date',
-    'order' => 'DESC'
-]);
+    $job_query = new WP_Query([
+        'post_type' => 'job',  // post type là job
+        'posts_per_page' => -1,
+        'orderby' => 'date',
+        'order' => 'DESC'
+    ]);
 
-$count = 0;
-while ($job_query->have_posts()) : $job_query->the_post();
-    $count++;
+    $count = 0;
+    while ($job_query->have_posts()):
+        $job_query->the_post();
+        $count++;
 
-    $image_url = get_the_post_thumbnail_url(get_the_ID(), 'large');
-    $registration_date = get_field('registration_date'); // ACF ngày đăng tuyển
-    $expiration_date = get_field('expiration_date'); // ACF ngày hết hạn
+        $image_url = get_the_post_thumbnail_url(get_the_ID(), 'large');
+        $registration_date = get_field('registration_date'); // ACF ngày đăng tuyển
+        $expiration_date = get_field('expiration_date'); // ACF ngày hết hạn
+    
+        // Animation class + delay xen kẽ
+        $animation_class = ($count % 2 === 1) ? 'fadeInLeft' : 'fadeInRight';
+        $animation_delay = ($count % 2 === 1) ? '0.4s' : '0.6s';
 
-    // Animation class + delay xen kẽ
-    $animation_class = ($count % 2 === 1) ? 'fadeInLeft' : 'fadeInRight';
-    $animation_delay = ($count % 2 === 1) ? '0.4s' : '0.6s';
+        $company = get_the_title();  // lấy title cho company
+        $job_name = get_the_content(); // lấy content cho h4 (tên công việc)
+        ?>
+        <div class="flip-container wow <?= $animation_class; ?>" data-wow-delay="<?= $animation_delay; ?>">
+            <div class="job-box">
+                <div class="job-front"
+                    style="background-image: url('<?= esc_url($image_url); ?>'); background-size: contain; background-position: center center; background-repeat: no-repeat;">
+                </div>
+                <div class="job-back">
+                    <div class="company"><?= esc_html($company); ?></div>
+                    <h4 class="text-uppercase"><?= esc_html(strip_tags($job_name)); ?></h4>
+                    <?php if ($registration_date): ?>
+                        <p><strong>Ngày đăng tuyển:</strong> <?= esc_html($registration_date); ?></p>
+                    <?php endif; ?>
+                    <?php if ($expiration_date): ?>
+                        <p><strong>Ngày hết hạn:</strong> <?= esc_html($expiration_date); ?></p>
+                    <?php endif; ?>
+                    <button type="button" class="btn btn-primary w-30% py-1 mt-2 apply-btn" data-bs-toggle="modal"
+                        data-bs-target="#applyModal" data-job-company="<?= esc_attr(get_the_title()); ?>"
+                        data-job-title="<?= esc_attr(wp_strip_all_tags(get_the_content())); ?>"
+                        data-job-registration-date="<?= esc_attr($registration_date); ?>"
+                        data-job-expiration-date="<?= esc_attr($expiration_date); ?>">
+                        Nộp hồ sơ
+                    </button>
 
-    $company = get_the_title();  // lấy title cho company
-    $job_name = get_the_content(); // lấy content cho h4 (tên công việc)
-?>
-    <div class="flip-container wow <?= $animation_class; ?>" data-wow-delay="<?= $animation_delay; ?>">
-        <div class="job-box">
-            <div class="job-front"
-                style="background-image: url('<?= esc_url($image_url); ?>'); background-size: contain; background-position: center center; background-repeat: no-repeat;">
-            </div>
-            <div class="job-back">
-                <div class="company"><?= esc_html($company); ?></div>
-                <h4 class="text-uppercase"><?= esc_html(strip_tags($job_name)); ?></h4>
-                <?php if ($registration_date) : ?>
-                <p><strong>Ngày đăng tuyển:</strong> <?= esc_html($registration_date); ?></p>
-                <?php endif; ?>
-                <?php if ($expiration_date) : ?>
-                <p><strong>Ngày hết hạn:</strong> <?= esc_html($expiration_date); ?></p>
-                <?php endif; ?>
-                <button type="button" class="btn btn-primary w-30% py-1 mt-2 apply-btn" data-bs-toggle="modal"
-                    data-bs-target="#applyModal" data-job-company="<?= esc_attr(get_the_title()); ?>"
-                    data-job-title="<?= esc_attr(wp_strip_all_tags(get_the_content())); ?>"
-                    data-job-registration-date="<?= esc_attr($registration_date); ?>"
-                    data-job-expiration-date="<?= esc_attr($expiration_date); ?>">
-                    Nộp hồ sơ
-                </button>
-
+                </div>
             </div>
         </div>
-    </div>
     <?php endwhile;
-wp_reset_postdata(); ?>
+    wp_reset_postdata(); ?>
     <!-- Modal Nộp hồ sơ -->
     <div class="modal fade" id="applyModal" tabindex="-1" aria-labelledby="applyModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
-            <form id="applyForm" method="post" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <form id="applyForm" method="post" enctype="multipart/form-data"
+                action="<?= esc_url(admin_url('admin-post.php')); ?>" class="needs-validation" novalidate>
+                <input type="hidden" name="action" value="nop_cv_submit">
+
                 <div class="modal-content shadow-lg">
                     <div class="modal-header bg-primary text-white">
                         <h5 class="modal-title w-100 text-center" id="applyModalLabel">Nộp hồ sơ ứng tuyển</h5>
@@ -126,6 +130,7 @@ wp_reset_postdata(); ?>
             </form>
         </div>
     </div>
+
 </div>
 
 
@@ -133,41 +138,41 @@ wp_reset_postdata(); ?>
 
 <!-- JS Bootstrap validation và truyền dữ liệu vào modal -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('applyForm');
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('applyForm');
 
-    form.addEventListener('submit', function(event) {
-        if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        form.classList.add('was-validated');
-    }, false);
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            form.classList.add('was-validated');
+        }, false);
 
-    const applyModal = document.getElementById('applyModal');
-    applyModal.addEventListener('show.bs.modal', function(event) {
-        const button = event.relatedTarget;
+        const applyModal = document.getElementById('applyModal');
+        applyModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
 
-        const jobTitle = button.getAttribute('data-job-title'); // Editor
-        const jobCompany = button.getAttribute('data-job-company'); // Title
-        const jobRegDate = button.getAttribute('data-job-registration-date');
-        const jobExpDate = button.getAttribute('data-job-expiration-date');
+            const jobTitle = button.getAttribute('data-job-title'); // Editor
+            const jobCompany = button.getAttribute('data-job-company'); // Title
+            const jobRegDate = button.getAttribute('data-job-registration-date');
+            const jobExpDate = button.getAttribute('data-job-expiration-date');
 
-        document.querySelector('#modalCompany span').textContent = jobCompany;
-        document.querySelector('#modalJobTitle span').textContent = jobTitle;
-        document.getElementById('modalRegistrationDate').textContent = jobRegDate;
-        document.getElementById('modalExpirationDate').textContent = jobExpDate;
+            document.querySelector('#modalCompany span').textContent = jobCompany;
+            document.querySelector('#modalJobTitle span').textContent = jobTitle;
+            document.getElementById('modalRegistrationDate').textContent = jobRegDate;
+            document.getElementById('modalExpirationDate').textContent = jobExpDate;
 
-        // hidden
-        document.getElementById('job_title').value = jobTitle;
-        document.getElementById('job_company').value = jobCompany;
-        document.getElementById('job_registration_date').value = jobRegDate;
-        document.getElementById('job_expiration_date').value = jobExpDate;
+            // hidden
+            document.getElementById('job_title').value = jobTitle;
+            document.getElementById('job_company').value = jobCompany;
+            document.getElementById('job_registration_date').value = jobRegDate;
+            document.getElementById('job_expiration_date').value = jobExpDate;
 
-        form.reset();
-        form.classList.remove('was-validated');
+            form.reset();
+            form.classList.remove('was-validated');
+        });
     });
-});
 </script>
 
 

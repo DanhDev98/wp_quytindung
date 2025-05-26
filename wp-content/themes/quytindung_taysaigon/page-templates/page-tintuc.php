@@ -30,40 +30,75 @@ get_header();  // Gọi file header.php
         </div>
 
         <!-- Các tin nhỏ bên phải -->
-        <div class="col-md-6 d-flex flex-column gap-3 justify-content-between">
-            <!-- 4 tin ngắn -->
-            <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
-                <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
-                    class="me-3 rounded" alt="" />
-                <div>
-                    <p class="small-news-title">Tin ngắn 1 - tiêu đề ngắn gọn</p>
-                    <a href="#" class="text-danger small">Xem thêm</a>
+        <div class="col-md-6">
+            <div class="scrollable-tin d-flex flex-column gap-3 overflow-auto" style="max-height: 500px;">
+                <!-- 4 tin ngắn -->
+                <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
+                    <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
+                        class="me-3 rounded" alt="" />
+                    <div>
+                        <p class="small-news-title">Tin ngắn 1 - tiêu đề ngắn gọn</p>
+                        <a href="#" class="text-danger small">Xem thêm</a>
+                    </div>
+                </div>
+                <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
+                    <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
+                        class="me-3 rounded" alt="" />
+                    <div>
+                        <p class="small-news-title">Tin ngắn 2 - tiêu đề ngắn gọn</p>
+                        <a href="#" class="text-danger small">Xem thêm</a>
+                    </div>
+                </div>
+                <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
+                    <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
+                        class="me-3 rounded" alt="" />
+                    <div>
+                        <p class="small-news-title">Tin ngắn 3 - tiêu đề ngắn gọn</p>
+                        <a href="#" class="text-danger small">Xem thêm</a>
+                    </div>
+                </div>
+                <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
+                    <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
+                        class="me-3 rounded" alt="" />
+                    <div>
+                        <p class="small-news-title">Tin ngắn 4 - tiêu đề ngắn gọn</p>
+                        <a href="#" class="text-danger small">Xem thêm</a>
+                    </div>
+                </div>
+                <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
+                    <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
+                        class="me-3 rounded" alt="" />
+                    <div>
+                        <p class="small-news-title">Tin ngắn 1 - tiêu đề ngắn gọn</p>
+                        <a href="#" class="text-danger small">Xem thêm</a>
+                    </div>
+                </div>
+                <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
+                    <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
+                        class="me-3 rounded" alt="" />
+                    <div>
+                        <p class="small-news-title">Tin ngắn 2 - tiêu đề ngắn gọn</p>
+                        <a href="#" class="text-danger small">Xem thêm</a>
+                    </div>
+                </div>
+                <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
+                    <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
+                        class="me-3 rounded" alt="" />
+                    <div>
+                        <p class="small-news-title">Tin ngắn 3 - tiêu đề ngắn gọn</p>
+                        <a href="#" class="text-danger small">Xem thêm</a>
+                    </div>
+                </div>
+                <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
+                    <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
+                        class="me-3 rounded" alt="" />
+                    <div>
+                        <p class="small-news-title">Tin ngắn 4 - tiêu đề ngắn gọn</p>
+                        <a href="#" class="text-danger small">Xem thêm</a>
+                    </div>
                 </div>
             </div>
-            <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
-                <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
-                    class="me-3 rounded" alt="" />
-                <div>
-                    <p class="small-news-title">Tin ngắn 2 - tiêu đề ngắn gọn</p>
-                    <a href="#" class="text-danger small">Xem thêm</a>
-                </div>
-            </div>
-            <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
-                <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
-                    class="me-3 rounded" alt="" />
-                <div>
-                    <p class="small-news-title">Tin ngắn 3 - tiêu đề ngắn gọn</p>
-                    <a href="#" class="text-danger small">Xem thêm</a>
-                </div>
-            </div>
-            <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
-                <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
-                    class="me-3 rounded" alt="" />
-                <div>
-                    <p class="small-news-title">Tin ngắn 4 - tiêu đề ngắn gọn</p>
-                    <a href="#" class="text-danger small">Xem thêm</a>
-                </div>
-            </div>
+
         </div>
     </div>
 
@@ -149,23 +184,7 @@ get_header();  // Gọi file header.php
                 </div>
             </div>
 
-            <!-- Slide 2 (tương tự) -->
-            <div class="carousel-item">
-                <div class="row">
-                    <!-- Lặp lại thêm 5 tin nữa -->
-                    <div class="col-md-2">
-                        <div class="card">
-                            <img src="https://via.placeholder.com/400x250" class="card-img-top" alt="..." />
-                            <div class="card-body">
-                                <h5 class="card-title">Tiêu đề tin 6</h5>
-                                <p class="card-text">Tóm gọn giúp giao diện gọn gàng và dễ theo dõi hơn.</p>
-                                <a href="#" class="btn btn-sm btn-outline-primary">Xem thêm</a>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Thêm các tin khác tương tự ở đây nếu muốn -->
-                </div>
-            </div>
+
         </div>
 
         <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel" data-bs-slide="prev">

@@ -2,6 +2,12 @@
 /* Template Name: Trang Thành viên*/
 get_header();  // Gọi file header.php
 ?>
+<!-- Swiper CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
 <div class="container team-section wow fadeInUp" data-wow-delay="0.2s" data-aos="fade-up">
     <img src="https://tindungtaysaigon.com/quanly/img/logo/16017891741601547718Artboard%2012logo%20QTD%20chan%20trang.png"
         alt="Logo Quỹ" class="logo-top wow fadeInLeft" data-wow-delay="0.3s">
@@ -9,74 +15,46 @@ get_header();  // Gọi file header.php
     <p class="wow fadeInLeft" data-wow-delay="0.5s">Đội ngũ điều hành giàu kinh nghiệm của Quỹ Tín Dụng Tây Sài Gòn</p>
 
     <div class="row g-4 justify-content-center">
+        <?php
+        $team_query = new WP_Query(array(
+            'post_type' => 'team',
+            'posts_per_page' => -1 // Hiển thị tất cả thành viên
+        ));
 
-        <!-- Thành viên 1 -->
-        <div class="col-md-4 col-sm-6 wow fadeInLeft" data-wow-delay="0.3s" data-aos="zoom-in">
-            <div class="team-card">
-                <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Nguyễn Văn A" class="team-image">
-                <div class="team-name">Nguyễn Văn A</div>
-                <div class="team-role">Giám đốc Điều hành</div>
-                <div class="team-contact">📧 a.nguyen@qtddsaigon.vn</div>
-                <div class="team-hotline">📞 0909 123 456</div>
+        $delay = 0; // Đếm delay cho animation AOS
+        
+        while ($team_query->have_posts()):
+            $team_query->the_post();
+
+            $image = get_the_post_thumbnail_url(get_the_ID(), 'medium');
+            // $role = get_the_content(); // Vai trò
+            $email = get_field('email');
+            $phone = get_field('phone-number');
+
+            // Tạo độ trễ cho hiệu ứng AOS
+            $delay += 100;
+            if ($delay > 200)
+                $delay = 0; // Reset sau 300ms
+            ?>
+            <div class="col-md-4 col-sm-6 wow fadeInLeft" data-wow-delay="0.3s" data-aos="zoom-in"
+                data-aos-delay="<?= $delay ?>">
+                <div class="team-card">
+                    <img src="<?= esc_url($image); ?>" alt="<?= esc_attr(get_the_title()); ?>" class="team-image">
+                    <div class="team-name"><?= esc_html(get_the_title()); ?></div>
+                    <div class="team-role"><?= wp_strip_all_tags(get_the_content(), true); ?></div>
+
+                    <?php if ($email): ?>
+                        <div class="team-contact">📧 <?= esc_html($email); ?></div>
+                    <?php endif; ?>
+                    <?php if ($phone): ?>
+                        <div class="team-hotline">📞 <?= esc_html($phone); ?></div>
+                    <?php endif; ?>
+                </div>
             </div>
-        </div>
-
-        <!-- Thành viên 2 -->
-        <div class="col-md-4 col-sm-6 wow fadeInLeft" data-wow-delay="0.3s" data-aos="zoom-in" data-aos-delay="100">
-            <div class="team-card">
-                <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Trần Thị B" class="team-image">
-                <div class="team-name">Trần Thị B</div>
-                <div class="team-role">Phó Giám đốc</div>
-                <div class="team-contact">📧 b.tran@qtddsaigon.vn</div>
-                <div class="team-hotline">📞 0909 123 456</div>
-            </div>
-        </div>
-
-        <!-- Thành viên 3 -->
-        <div class="col-md-4 col-sm-6 wow fadeInLeft" data-wow-delay="0.3s" data-aos="zoom-in" data-aos-delay="200">
-            <div class="team-card">
-                <img src="https://randomuser.me/api/portraits/men/51.jpg" alt="Lê Văn C" class="team-image">
-                <div class="team-name">Lê Văn C</div>
-                <div class="team-role">Trưởng Ban Kiểm Soát</div>
-                <div class="team-contact">📧 c.le@qtddsaigon.vn</div>
-                <div class="team-hotline">📞 0909 123 456</div>
-            </div>
-        </div>
-
-        <!-- Thành viên 1 -->
-        <div class="col-md-4 col-sm-6 wow fadeInRight" data-wow-delay="0.3s" data-aos="zoom-in">
-            <div class="team-card">
-                <img src="https://randomuser.me/api/portraits/men/75.jpg" alt="Nguyễn Văn A" class="team-image">
-                <div class="team-name">Nguyễn Văn A</div>
-                <div class="team-role">Giám đốc Điều hành</div>
-                <div class="team-contact">📧 a.nguyen@qtddsaigon.vn</div>
-                <div class="team-hotline">📞 0909 123 456</div>
-            </div>
-        </div>
-
-        <!-- Thành viên 2 -->
-        <div class="col-md-4 col-sm-6 wow fadeInRight" data-wow-delay="0.3s" data-aos="zoom-in" data-aos-delay="100">
-            <div class="team-card">
-                <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Trần Thị B" class="team-image">
-                <div class="team-name">Trần Thị B</div>
-                <div class="team-role">Phó Giám đốc</div>
-                <div class="team-contact">📧 b.tran@qtddsaigon.vn</div>
-                <div class="team-hotline">📞 0909 123 456</div>
-            </div>
-        </div>
-
-        <!-- Thành viên 3 -->
-        <div class="col-md-4 col-sm-6 wow fadeInRight" data-wow-delay="0.3s" data-aos="zoom-in" data-aos-delay="200">
-            <div class="team-card">
-                <img src="https://randomuser.me/api/portraits/men/51.jpg" alt="Lê Văn C" class="team-image">
-                <div class="team-name">Lê Văn C</div>
-                <div class="team-role">Trưởng Ban Kiểm Soát</div>
-                <div class="team-contact">📧 c.le@qtddsaigon.vn</div>
-                <div class="team-hotline">📞 0909 123 456</div>
-            </div>
-        </div>
-
+        <?php endwhile;
+        wp_reset_postdata(); ?>
     </div>
+
 </div>
 <?php
 get_footer();  // Gọi file footer.php

@@ -264,13 +264,10 @@
 
 /*** Features ***/
 .feature {
-  background: linear-gradient(
-      to right,
+  background: linear-gradient(to right,
       rgba(0, 0, 0, 0.1),
-      rgba(0, 0, 0, 1) 50%
-    ),
-    url(https://hoigiasudanang.com/wp-content/uploads/2022/09/kinh-te-10-bai-2.jpg)
-      left center no-repeat;
+      rgba(0, 0, 0, 1) 50%),
+    url(https://hoigiasudanang.com/wp-content/uploads/2022/09/kinh-te-10-bai-2.jpg) left center no-repeat;
   background-size: cover;
 }
 
@@ -743,7 +740,7 @@ h1 {
   border: 1px solid #ccc;
 }
 
-.page > img {
+.page>img {
   width: 100%;
   height: auto;
   display: block;
@@ -894,7 +891,7 @@ h1 {
   overflow: hidden;
 }
 
-.banner > h1 {
+.banner>h1 {
   font-size: 3rem;
   font-weight: bold;
   animation: float 3s ease-in-out infinite;
@@ -923,6 +920,7 @@ h1 {
 }
 
 @keyframes float {
+
   0%,
   100% {
     transform: translateY(0);
@@ -1091,7 +1089,7 @@ h1 {
   transform: translateY(-10px);
 }
 
-.card > img {
+.card>img {
   width: 60px;
   height: 60px;
   margin: 10px auto;
@@ -1854,4 +1852,22 @@ ul li {
   object-fit: cover;
 }
 
+/* thanh cuộn phải tin tức */
+.news-scrollable {
+  max-height: 500px;
+  /* hoặc chiều cao bạn muốn */
+  overflow-y: auto;
+  padding-right: 8px;
+  /* để không bị ẩn nội dung do thanh cuộn */
+}
 
+.news-scrollable::-webkit-scrollbar {
+  width: 6px;
+}
+
+.news-scrollable::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+}
+
+/* test new */

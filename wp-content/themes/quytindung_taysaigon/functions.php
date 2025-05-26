@@ -10,7 +10,7 @@ function quytindungtaysaigon_setup()
 }
 add_action('after_setup_theme', 'quytindungtaysaigon_setup');
 
-add_filter( 'http_request_timeout', function( $timeout ) {
+add_filter('http_request_timeout', function ($timeout) {
     return 30; // tăng thời gian timeout lên 30 giây
 });
 
@@ -58,11 +58,11 @@ function tinds_enqueue_scripts()
     // Main JS
     wp_enqueue_script('main', get_template_directory_uri() . '/assets/js/main.js', array('jquery-cdn'), null, true);
     wp_enqueue_script('cauhoi', get_template_directory_uri() . '/assets/js/cauhoi.js', array('jquery-cdn'), null, true);
-     wp_enqueue_script(
-        'zalo-sdk', 
-        'https://sp.zalo.me/plugins/sdk.js', 
-        array(), 
-        null, 
+    wp_enqueue_script(
+        'zalo-sdk',
+        'https://sp.zalo.me/plugins/sdk.js',
+        array(),
+        null,
         true // Chèn vào footer
     );
 }
@@ -74,11 +74,11 @@ add_action('wp_ajax_nopriv_submit_feedback', 'handle_submit_feedback');
 
 function handle_submit_feedback()
 {
-    $name     = sanitize_text_field($_POST['name']);
-    $contact  = sanitize_text_field($_POST['contact']);
+    $name = sanitize_text_field($_POST['name']);
+    $contact = sanitize_text_field($_POST['contact']);
     $position = sanitize_text_field($_POST['position']);
-    $rating   = intval($_POST['rating']);
-    $message  = sanitize_textarea_field($_POST['message']);
+    $rating = intval($_POST['rating']);
+    $message = sanitize_textarea_field($_POST['message']);
 
     // Ảnh avatar ngẫu nhiên (dạng URL)
     $avatars = [
@@ -91,9 +91,9 @@ function handle_submit_feedback()
 
     // Tạo bài viết mới cho feedback
     $post_id = wp_insert_post([
-        'post_type'   => 'feedback',
+        'post_type' => 'feedback',
         'post_status' => 'publish',
-        'post_title'  => $name,
+        'post_title' => $name,
     ]);
 
     if ($post_id) {
@@ -152,22 +152,121 @@ add_action('template_redirect', function () {
 
 if (function_exists('acf_add_options_page')) {
     acf_add_options_page(array(
-        'page_title'    => 'Cài đặt Topbar',
-        'menu_title'    => 'Topbar',
-        'menu_slug'     => 'topbar-settings',
-        'capability'    => 'edit_posts',
-        'redirect'      => false
+        'page_title' => 'Cài đặt Topbar',
+        'menu_title' => 'Topbar',
+        'menu_slug' => 'topbar-settings',
+        'capability' => 'edit_posts',
+        'redirect' => false
     ));
 }
 
+// form tuyển dụng 
+add_action('admin_post_nopriv_nop_cv_submit', 'handle_cv_form_submission');
+add_action('admin_post_nop_cv_submit', 'handle_cv_form_submission');
 
+function handle_cv_form_submission()
+{
+    $name = sanitize_text_field($_POST['applicant_name']);
+    $email = sanitize_email($_POST['applicant_email']);
+    $phone = sanitize_text_field($_POST['applicant_phone']);
 
+    $job_title = sanitize_text_field($_POST['job_title']);
+    $job_company = sanitize_text_field($_POST['job_company']);
+    $reg_date = sanitize_text_field($_POST['job_registration_date']);
+    $exp_date = sanitize_text_field($_POST['job_expiration_date']);
 
+    // Cần include nếu chưa có
+    if (!function_exists('media_handle_upload')) {
+        require_once(ABSPATH . 'wp-admin/includes/image.php');
+        require_once(ABSPATH . 'wp-admin/includes/file.php');
+        require_once(ABSPATH . 'wp-admin/includes/media.php');
+    }
 
+    // Tạo bài viết trước
+    $post_id = wp_insert_post([
+        'post_type' => 'cv',
+        'post_title' => $name . ' - ' . $job_title,
+        'post_status' => 'publish',
+    ]);
 
+    if ($post_id && !empty($_FILES['applicant_cv']['name'])) {
+        // Upload file và gán vào thư viện Media
+        $attachment_id = media_handle_upload('applicant_cv', $post_id);
 
+        if (!is_wp_error($attachment_id)) {
+            // Gán attachment vào field ACF (phải là kiểu File)
+            update_field('cv_file_url', $attachment_id, $post_id);
+        } else {
+            wp_die('Lỗi upload CV: ' . $attachment_id->get_error_message());
+        }
 
+        // Lưu các trường ACF khác
+        update_field('applicant_name', $name, $post_id);
+        update_field('applicant_email', $email, $post_id);
+        update_field('applicant_phone', $phone, $post_id);
+        update_field('job_title', $job_title, $post_id);
+        update_field('job_company', $job_company, $post_id);
+        update_field('job_registration_date', $reg_date, $post_id);
+        update_field('job_expiration_date', $exp_date, $post_id);
 
+        // Redirect sau khi gửi thành công
+        wp_redirect(home_url('/thanks-for-submit/'));
+        exit;
+    } else {
+        wp_die('Không thể tạo bài viết hoặc chưa có file CV');
+    }
+}
 
+// tra cứu tk
+add_action('wp_ajax_tra_cuu_tai_khoan', 'handle_tra_cuu_tai_khoan');
+add_action('wp_ajax_nopriv_tra_cuu_tai_khoan', 'handle_tra_cuu_tai_khoan');
 
+function handle_tra_cuu_tai_khoan()
+{
+    $input = sanitize_text_field($_POST['query']);
+    if (!$input) {
+        echo "⚠️ Vui lòng nhập thông tin!";
+        wp_die();
+    }
 
+    // Tìm post với meta_key là mstk hoặc cccd
+    $args = [
+        'post_type' => 'sotaikhoan', // Tên post type bạn dùng
+        'post_status' => 'publish',
+        'meta_query' => [
+            'relation' => 'OR',
+            [
+                'key' => 'mstk',
+                'value' => $input,
+                'compare' => '='
+            ],
+            [
+                'key' => 'cccd',
+                'value' => $input,
+                'compare' => '='
+            ]
+        ]
+    ];
+
+    $query = new WP_Query($args);
+
+    if ($query->have_posts()) {
+        while ($query->have_posts()) {
+            $query->the_post();
+            echo "<div style='padding:15px;background:#fff;border-radius:10px;border:1px solid #ddd'>";
+            echo "<strong>Khách hàng:</strong> " . get_the_title() . "<br>";
+            echo "<strong>MSTK:</strong> " . get_field('mstk') . "<br>";
+            echo "<strong>CCCD:</strong> " . get_field('cccd') . "<br>";
+            echo "<strong>Số dư:</strong> " . number_format(get_field('sodu')) . " VND<br>";
+            echo "<strong>Gốc ban đầu:</strong> " . number_format(get_field('gocbandau')) . " VND<br>";
+            echo "<strong>Ngày gửi:</strong> " . get_field('ngaygui') . "<br>";
+            echo "<strong>Ngày đáo hạn:</strong> " . get_field('ngaydh') . "<br>";
+            echo "<strong>Lãi suất:</strong> " . get_field('laisuat') . " %<br>";
+            echo "</div>";
+        }
+    } else {
+        echo "❌ Không tìm thấy tài khoản nào khớp với thông tin bạn nhập.";
+    }
+
+    wp_die();
+}

@@ -1,49 +1,56 @@
 <?php
 /* Template Name: Trang Biểu mẫu */
-get_header();  // Gọi file header.php
+get_header();
 ?>
+
 <div class="form-container">
-    <h2>BIỂU MẪU</h2>
+    <h2 style="margin-top: 40px">BIỂU MẪU</h2>
 
-    <div class="form-item">
-        <button class="form-title">Gửi tiền tiết kiệm</button>
-        <div class="form-content">
-            <p>Tải mẫu: <a href="/dangkydichvu.html">Mẫu đăng ký gửi tiết kiệm</a> | <a href="/dangkydichvu.html">Giấy
-                    xác nhận gửi tiền</a></p>
-        </div>
-    </div>
+    <?php
+    $args = array(
+        'post_type' => 'bieumau',
+        'posts_per_page' => -1,
+        'orderby' => 'menu_order',
+        'order' => 'ASC'
+    );
+    $query = new WP_Query($args);
+    if ($query->have_posts()):
+        while ($query->have_posts()):
+            $query->the_post();
 
-    <div class="form-item">
-        <button class="form-title">Vay vốn cá nhân</button>
-        <div class="form-content">
-            <p>Tải mẫu: <a href="/dangkydichvu.html">Hồ sơ vay vốn</a> | <a href="/dangkydichvu.html">Cam kết trả
-                    nợ</a></p>
-        </div>
-    </div>
+            // Lấy ACF fields
+            $name_file_1 = get_field('name_file1');
+            $file_1 = get_field('file_1');
+            $name_file_2 = get_field('name_file2');
+            $file_2 = get_field('file_2');
+            ?>
 
-    <div class="form-item">
-        <button class="form-title">Dịch vụ chuyển tiền</button>
-        <div class="form-content">
-            <p>Tải mẫu: <a href="/dangkydichvu.html">Phiếu yêu cầu chuyển khoản</a></p>
-        </div>
-    </div>
+            <div class="form-item">
+                <button class="form-title"><?php the_title(); ?></button>
+                <div class="form-content">
+                    <p>Tải mẫu:
+                        <?php if ($file_1): ?>
+                            <a href="<?= esc_url($file_1); ?>" download><?= esc_html($name_file_1); ?></a>
+                        <?php endif; ?>
 
-    <div class="form-item">
-        <button class="form-title">Thanh toán tiền điện, nước</button>
-        <div class="form-content">
-            <p>Tải mẫu: <a href="/dangkydichvu.html">Đăng ký thanh toán hóa đơn</a></p>
-        </div>
-    </div>
+                        <?php if ($file_2): ?>
+                            <?php if ($file_1): ?> | <?php endif; ?>
+                            <a href="<?= esc_url($file_2); ?>" download><?= esc_html($name_file_2); ?></a>
+                        <?php endif; ?>
 
-    <div class="form-item">
-        <button class="form-title">Dịch vụ bảo quản tài sản</button>
-        <div class="form-content">
-            <p>Tải mẫu: <a href="/dangkydichvu.html">Biên bản gửi tài sản</a> | <a href="/dangkydichvu.html">Phiếu
-                    nhận tài sản</a></p>
-        </div>
-    </div>
+
+                    </p>
+                </div>
+
+
+            </div>
+            <?php
+        endwhile;
+        wp_reset_postdata();
+    else:
+        echo '<p>Chưa có biểu mẫu nào.</p>';
+    endif;
+    ?>
 </div>
 
-<?php
-get_footer();  // Gọi file footer.php
-?>
+<?php get_footer(); ?>
