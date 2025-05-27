@@ -217,32 +217,126 @@ function handle_cv_form_submission()
     }
 }
 
+
+
+
+
+
+
+
+// tạo acf tài khoản
+// 1. Thêm menu vào admin
+add_action('admin_menu', function () {
+    add_menu_page('Import Tài Khoản', 'Import Tài Khoản', 'manage_options', 'import-tai-khoan', 'render_import_form');
+});
+
+
+function render_import_form() {
+    ?>
+<div class="wrap">
+    <h1>Import Tài Khoản từ CSV</h1>
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="import_file" accept=".csv" required>
+        <?php submit_button('Import'); ?>
+    </form>
+</div>
+<?php
+
+    if (isset($_FILES['import_file'])) {
+        $file = $_FILES['import_file']['tmp_name'];
+        handle_csv_import($file);
+    }
+}
+function handle_csv_import($file) {
+    if (!file_exists($file)) {
+        echo "<div class='notice notice-error'><p>Không tìm thấy file.</p></div>";
+        return;
+    }
+
+    if (($handle = fopen($file, "r")) !== FALSE) {
+        $row = 0;
+        while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+            if ($row === 0) { $row++; continue; }
+
+            $mstk      = sanitize_text_field($data[1]);
+            $cccd      = sanitize_text_field($data[21]); // ✅ đúng index
+            $sodu      = sanitize_text_field($data[9]);
+            $gocbandau = sanitize_text_field($data[8]);
+            $ngaygui   = sanitize_text_field($data[5]);
+            $ngaydh    = sanitize_text_field($data[6]);
+            $laisuat   = sanitize_text_field($data[7]);
+            $tenkhachhang = sanitize_text_field($data[19]);
+               
+            // Tìm bài viết đã có theo mstk
+            $existing_posts = get_posts([
+                'post_type'   => 'sotaikhoan',
+                'meta_key'    => 'mstk',
+                'meta_value'  => $mstk,
+                'post_status' => 'publish',
+                'numberposts' => 1,
+            ]);
+
+            if (!empty($existing_posts)) {
+                // Nếu tồn tại thì update
+                $post_id = $existing_posts[0]->ID;
+
+                wp_update_post([
+                    'ID'         => $post_id,
+                    'post_title' => $mstk,
+                ]);
+            } else {
+                // Nếu chưa có thì tạo mới
+                    $post_id = wp_insert_post([
+                        'post_title'   => $mstk,
+                        'post_content' => $tenkhachhang,
+                        'post_type'    => 'sotaikhoan',
+                        'post_status'  => 'publish',
+                    ]);
+                }
+
+            if ($post_id && !is_wp_error($post_id)) {
+                update_field('mstk', $mstk, $post_id);
+                update_field('cccd', $cccd, $post_id);
+                update_field('sodu', $sodu, $post_id);
+                update_field('gocbandau', $gocbandau, $post_id);
+                update_field('ngaygui', $ngaygui, $post_id);
+                update_field('ngaydh', $ngaydh, $post_id);
+                update_field('laisuat', $laisuat, $post_id);
+                update_field('ten_khach_hang', $tenkhachhang, $post_id);
+            }
+        }
+        fclose($handle);
+
+        echo "<div class='notice notice-success'><p>Import thành công!</p></div>";
+    }
+}
+
 // tra cứu tk
 add_action('wp_ajax_tra_cuu_tai_khoan', 'handle_tra_cuu_tai_khoan');
 add_action('wp_ajax_nopriv_tra_cuu_tai_khoan', 'handle_tra_cuu_tai_khoan');
 
-function handle_tra_cuu_tai_khoan()
-{
-    $input = sanitize_text_field($_POST['query']);
-    if (!$input) {
+function handle_tra_cuu_tai_khoan() {
+    // Kiểm tra đầu vào
+    $input = isset($_POST['query']) ? sanitize_text_field($_POST['query']) : '';
+    if (empty($input)) {
         echo "⚠️ Vui lòng nhập thông tin!";
         wp_die();
     }
 
-    // Tìm post với meta_key là mstk hoặc cccd
+    // Truy vấn bài viết theo MSTK hoặc CCCD
     $args = [
-        'post_type' => 'sotaikhoan', // Tên post type bạn dùng
+        'post_type'   => 'sotaikhoan',
         'post_status' => 'publish',
-        'meta_query' => [
+        'meta_query'  => [
             'relation' => 'OR',
             [
-                'key' => 'mstk',
-                'value' => $input,
+                'key'     => 'mstk',
+                'value'   => $input,
                 'compare' => '='
             ],
             [
-                'key' => 'cccd',
-                'value' => $input,
+                'key'     => 'cccd',
+                'value'   => $input,
                 'compare' => '='
             ]
         ]
@@ -253,15 +347,28 @@ function handle_tra_cuu_tai_khoan()
     if ($query->have_posts()) {
         while ($query->have_posts()) {
             $query->the_post();
-            echo "<div style='padding:15px;background:#fff;border-radius:10px;border:1px solid #ddd'>";
-            echo "<strong>Khách hàng:</strong> " . get_the_title() . "<br>";
-            echo "<strong>MSTK:</strong> " . get_field('mstk') . "<br>";
-            echo "<strong>CCCD:</strong> " . get_field('cccd') . "<br>";
-            echo "<strong>Số dư:</strong> " . number_format(get_field('sodu')) . " VND<br>";
-            echo "<strong>Gốc ban đầu:</strong> " . number_format(get_field('gocbandau')) . " VND<br>";
-            echo "<strong>Ngày gửi:</strong> " . get_field('ngaygui') . "<br>";
-            echo "<strong>Ngày đáo hạn:</strong> " . get_field('ngaydh') . "<br>";
-            echo "<strong>Lãi suất:</strong> " . get_field('laisuat') . " %<br>";
+
+            // Lấy dữ liệu từ custom fields
+            $mstk        = get_field('mstk');
+            $cccd        = get_field('cccd');
+            $sodu        = get_field('sodu');
+            $gocbandau   = get_field('gocbandau');
+            $ngaygui     = get_field('ngaygui');
+            $ngaydh      = get_field('ngaydh');
+            $laisuat     = get_field('laisuat');
+            $ten_khach   = get_field('ten_khach_hang'); // Tên đúng từ ACF
+            $post_title  = get_the_title(); // fallback nếu tên khách hàng không có
+
+            // Hiển thị kết quả
+            echo "<div style='padding:15px;background:#fff;border-radius:10px;border:1px solid #ddd;margin-bottom:15px'>";
+            echo "<strong>Khách hàng:</strong> " . esc_html($ten_khach ?: $post_title) . "<br>";
+            echo "<strong>MSTK:</strong> " . esc_html($mstk) . "<br>";
+            echo "<strong>CCCD:</strong> " . esc_html($cccd) . "<br>";
+            echo "<strong>Số dư:</strong> " . number_format((float)$sodu) . " VND<br>";
+            echo "<strong>Gốc ban đầu:</strong> " . number_format((float)$gocbandau) . " VND<br>";
+            echo "<strong>Ngày gửi:</strong> " . esc_html($ngaygui) . "<br>";
+            echo "<strong>Ngày đáo hạn:</strong> " . esc_html($ngaydh) . "<br>";
+            echo "<strong>Lãi suất:</strong> " . esc_html($laisuat) . " %<br>";
             echo "</div>";
         }
     } else {
@@ -270,3 +377,79 @@ function handle_tra_cuu_tai_khoan()
 
     wp_die();
 }
+
+// filter news by year
+add_action('wp_ajax_filter_news_by_year', 'filter_news_by_year_callback');
+add_action('wp_ajax_nopriv_filter_news_by_year', 'filter_news_by_year_callback');
+
+function filter_news_by_year_callback() {
+    $year = isset($_POST['year']) ? intval($_POST['year']) : 0;
+
+    $args = [
+        'post_type' => 'post',
+        'posts_per_page' => -1,
+        'orderby' => 'date',
+        'order' => 'DESC',
+    ];
+
+    if ($year) {
+        $args['date_query'] = [
+            ['year' => $year]
+        ];
+    }
+
+    $query = new WP_Query($args);
+
+    echo '<div class="carousel-inner">';
+
+    if ($query->have_posts()) {
+        $posts = $query->posts;
+        $chunks = array_chunk($posts, 4);
+
+        foreach ($chunks as $index => $chunk) {
+            echo '<div class="carousel-item ' . ($index === 0 ? 'active' : '') . '">';
+            echo '<div class="row news">';
+            foreach ($chunk as $post) {
+                setup_postdata($post);
+                echo '<div class="col-md-2">';
+                echo '<div class="card news-item-card h-100">';
+                if (has_post_thumbnail($post->ID)) {
+                    echo '<a href="' . get_permalink($post->ID) . '">';
+                    echo get_the_post_thumbnail($post->ID, 'medium', ['class' => 'card-img-top']);
+                    echo '</a>';
+                } else {
+                    echo '<img src="https://via.placeholder.com/400x250" class="card-img-top" alt="No image">';
+                }
+                echo '<div class="card-body d-flex flex-column">';
+                echo '<h6 class="card-title">' . get_the_title($post->ID) . '</h6>';
+                echo '<p class="card-text small">' . wp_trim_words(get_the_excerpt($post->ID), 15, '...') . '</p>';
+                echo '<a href="' . get_permalink($post->ID) . '" class="btn btn-sm btn-outline-primary mt-auto">Xem thêm</a>';
+                echo '</div></div></div>';
+            }
+            wp_reset_postdata();
+            echo '</div></div>';
+        }
+    } else {
+        echo '<div class="carousel-item active">';
+        echo '<p class="text-center p-4">Không có bài tin tức nào cho năm ' . esc_html($year) . '.</p>';
+        echo '</div>';
+    }
+
+    echo '</div>';
+
+    wp_die();
+}
+
+function enqueue_filter_news_scripts() {
+    wp_enqueue_script('jquery');
+
+    // Nếu Bootstrap JS chưa được enqueue thì thêm dòng dưới:
+    wp_enqueue_script('bootstrap-js', 'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js', [], '5.3.0', true);
+
+    wp_enqueue_script('filter-news', get_template_directory_uri() . '/js/filter-news.js', ['jquery', 'bootstrap-js'], '1.0', true);
+
+    wp_localize_script('filter-news', 'my_ajax_obj', [
+        'ajax_url' => admin_url('admin-ajax.php'),
+    ]);
+}
+add_action('wp_enqueue_scripts', 'enqueue_filter_news_scripts');

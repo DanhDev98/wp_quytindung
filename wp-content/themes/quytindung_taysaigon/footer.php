@@ -8,7 +8,7 @@ $has_feedbacks = new WP_Query([
 if ($has_feedbacks->have_posts()):
 ?>
 <!-- Testimonial Start -->
-<div class="container-fluid pt-6 pb-6">
+<div class="container-fluid pt-6">
     <div class="container">
         <div class="text-center mx-auto wow fadeInUp" data-wow-delay="0.1s" style="max-width: 600px;">
             <h1 class="display-6 text-uppercase mb-5">Khách hàng nói gì về chúng tôi</h1>
@@ -34,11 +34,11 @@ if ($has_feedbacks->have_posts()):
                             $avatar = get_field('feedback_avatar');
                             if ($avatar):
                                 ?>
-                                <div class="animated flip infinite">
-                                    <img class="img-fluid rounded-circle" src="<?php echo esc_url($avatar); ?>"
-                                         alt="<?php the_title_attribute(); ?>">
-                                </div>
-                                <?php
+                    <div class="animated flip infinite">
+                        <img class="img-fluid rounded-circle" src="<?php echo esc_url($avatar); ?>"
+                            alt="<?php the_title_attribute(); ?>">
+                    </div>
+                    <?php
                             endif;
                         endwhile;
                         wp_reset_postdata();
@@ -64,30 +64,30 @@ if ($has_feedbacks->have_posts()):
                             $contact  = get_field('feedback_contact');
                             $content  = get_field('feedback_content');
                             ?>
-                            <div class="testimonial-item">
-                                <div class="d-flex align-items-center mb-4">
-                                    <?php if ($avatar): ?>
-                                        <img class="img-fluid rounded-circle" style="width: 60px; height: 60px; object-fit: cover;"
-                                             src="<?php echo esc_url($avatar); ?>" alt="<?php the_title_attribute(); ?>">
-                                    <?php endif; ?>
-                                    <div class="ms-3">
-                                        <div class="mb-2">
-                                            <?php for ($i = 1; $i <= 5; $i++): ?>
-                                                <i class="<?php echo ($i <= $rating) ? 'fas' : 'far'; ?> fa-star text-primary"></i>
-                                            <?php endfor; ?>
-                                        </div>
-                                        <h5 class="text-uppercase"><?php the_title(); ?></h5>
-                                        <?php if ($position): ?>
-                                            <span><?php echo esc_html($position); ?></span><br>
-                                        <?php endif; ?>
-                                        <?php if ($contact): ?>
-                                            <span class="mt-2"><strong><?php echo esc_html($contact); ?></strong></span>
-                                        <?php endif; ?>
-                                    </div>
+                    <div class="testimonial-item">
+                        <div class="d-flex align-items-center mb-4">
+                            <?php if ($avatar): ?>
+                            <img class="img-fluid rounded-circle" style="width: 60px; height: 60px; object-fit: cover;"
+                                src="<?php echo esc_url($avatar); ?>" alt="<?php the_title_attribute(); ?>">
+                            <?php endif; ?>
+                            <div class="ms-3">
+                                <div class="mb-2">
+                                    <?php for ($i = 1; $i <= 5; $i++): ?>
+                                    <i class="<?php echo ($i <= $rating) ? 'fas' : 'far'; ?> fa-star text-primary"></i>
+                                    <?php endfor; ?>
                                 </div>
-                                <p class="fs-5"><?php echo esc_html($content); ?></p>
+                                <h5 class="text-uppercase"><?php the_title(); ?></h5>
+                                <?php if ($position): ?>
+                                <span><?php echo esc_html($position); ?></span><br>
+                                <?php endif; ?>
+                                <?php if ($contact): ?>
+                                <span class="mt-2"><strong><?php echo esc_html($contact); ?></strong></span>
+                                <?php endif; ?>
                             </div>
-                            <?php
+                        </div>
+                        <p class="fs-5"><?php echo esc_html($content); ?></p>
+                    </div>
+                    <?php
                         endwhile;
                         wp_reset_postdata();
                     endif;
@@ -122,10 +122,12 @@ endif;
                 </div>
                 <div class="col-md-6 wow fadeIn" data-wow-delay="0.5s">
                     <div class="form-floating mb-3">
-                        <input type="email" name="custom_newsletter_email" class="form-control border-0 bg-light" id="mail" placeholder="Your Email" required>
+                        <input type="email" name="custom_newsletter_email" class="form-control border-0 bg-light"
+                            id="mail" placeholder="Your Email" required>
                         <label for="mail">Email của bạn</label>
                     </div>
-                    <button class="btn btn-primary w-100 py-3" type="submit" name="submit_newsletter">Đăng ký ngay</button>
+                    <button class="btn btn-primary w-100 py-3" type="submit" name="submit_newsletter">Đăng ký
+                        ngay</button>
                 </div>
             </div>
         </div>
@@ -229,13 +231,9 @@ endif;
 <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
 
 <!-- Zalo Chat Widget -->
-<div class="zalo-chat-widget "
-     data-oaid="1363234381175033899"
-     data-welcome-message="Chào bạn! BEONE rất vui được hỗ trợ."
-     data-autopopup="1"
-     data-width="350"
-     data-height="420"
-     style="">
+<div class="zalo-chat-widget " data-oaid="1363234381175033899"
+    data-welcome-message="Chào bạn! BEONE rất vui được hỗ trợ." data-autopopup="1" data-width="350" data-height="420"
+    style="">
 </div>
 
 <!-- <button id="zalo-popup-btn" class="zalo-btn" style="background-color: transparent; box-shadow: none; border: none; position: fixed;">

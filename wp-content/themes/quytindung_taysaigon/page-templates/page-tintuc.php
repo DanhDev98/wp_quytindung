@@ -12,189 +12,186 @@ get_header();  // Gọi file header.php
     <!-- Tin tức mới nhất -->
     <h2 class="section-title">Tin tức mới nhất</h2>
     <div class="row news-featured mb-5">
+        <?php
+    // Lấy bài viết mới nhất từ chuyên mục 'tin-moi-nhat'
+    $args_featured = array(
+        'post_type'      => 'post',
+        'posts_per_page' => 1,
+        'category_name'  => 'tin-moi-nhat',
+    );
+    $featured_query = new WP_Query($args_featured);
+
+    if ($featured_query->have_posts()):
+        $featured_query->the_post();
+        $featured_id = get_the_ID(); // Lưu ID để không bị trùng ở danh sách bên phải
+        ?>
         <!-- Tin lớn bên trái -->
         <div class="col-md-6">
             <div class="card card-left border-0">
-                <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/6841732066886.jpeg"
-                    class="card-img-top rounded" alt="Tin lớn" />
+                <?php if (has_post_thumbnail()): ?>
+                <a href="<?php the_permalink(); ?>">
+                    <?php the_post_thumbnail('large', ['class' => 'card-img-top rounded', 'alt' => get_the_title()]); ?>
+                </a>
+                <?php endif; ?>
                 <div class="card-body px-0">
-                    <h4 class="card-title">Tiêu đề tin lớn nổi bật</h4>
-                    <p>
-                        Mô tả ngắn gọn về tin tức nổi bật này để thu hút người xem click
-                        vào xem chi tiết. Đoạn văn này sẽ được rút gọn chỉ còn khoảng 20
-                        từ bằng script phía dưới...
-                    </p>
-                    <a href="/chitietTintuc.html" class="btn btn-outline-danger btn-sm">Xem chi tiết</a>
+                    <h4 class="card-title"><?php the_title(); ?></h4>
+                    <p><?php echo wp_trim_words(get_the_excerpt(), 20, '...'); ?></p>
+                    <a href="<?php the_permalink(); ?>" class="btn btn-outline-danger btn-sm">Xem chi tiết</a>
                 </div>
             </div>
         </div>
+        <?php endif; wp_reset_postdata(); ?>
 
         <!-- Các tin nhỏ bên phải -->
         <div class="col-md-6">
             <div class="scrollable-tin d-flex flex-column gap-3 overflow-auto" style="max-height: 500px;">
-                <!-- 4 tin ngắn -->
+                <?php
+            // Lấy 6 bài viết mới khác, loại trừ bài nổi bật
+            $args_others = array(
+                'post_type'      => 'post',
+                'posts_per_page' => 6,
+                'post__not_in'   => [$featured_id ?? 0], // Tránh trùng với tin nổi bật
+                'orderby'        => 'date',
+                'order'          => 'DESC',
+            );
+            $news_query = new WP_Query($args_others);
+            if ($news_query->have_posts()):
+                while ($news_query->have_posts()):
+                    $news_query->the_post();
+                    ?>
                 <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
-                    <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
-                        class="me-3 rounded" alt="" />
+                    <?php if (has_post_thumbnail()): ?>
+                    <a href="<?php the_permalink(); ?>">
+                        <?php the_post_thumbnail('thumbnail', ['class' => 'me-3 rounded', 'alt' => get_the_title()]); ?>
+                    </a>
+                    <?php endif; ?>
                     <div>
-                        <p class="small-news-title">Tin ngắn 1 - tiêu đề ngắn gọn</p>
-                        <a href="#" class="text-danger small">Xem thêm</a>
+                        <p class="small-news-title mb-1"><?php the_title(); ?></p>
+                        <a href="<?php the_permalink(); ?>" class="text-danger small">Xem thêm</a>
                     </div>
                 </div>
-                <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
-                    <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
-                        class="me-3 rounded" alt="" />
-                    <div>
-                        <p class="small-news-title">Tin ngắn 2 - tiêu đề ngắn gọn</p>
-                        <a href="#" class="text-danger small">Xem thêm</a>
-                    </div>
-                </div>
-                <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
-                    <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
-                        class="me-3 rounded" alt="" />
-                    <div>
-                        <p class="small-news-title">Tin ngắn 3 - tiêu đề ngắn gọn</p>
-                        <a href="#" class="text-danger small">Xem thêm</a>
-                    </div>
-                </div>
-                <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
-                    <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
-                        class="me-3 rounded" alt="" />
-                    <div>
-                        <p class="small-news-title">Tin ngắn 4 - tiêu đề ngắn gọn</p>
-                        <a href="#" class="text-danger small">Xem thêm</a>
-                    </div>
-                </div>
-                <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
-                    <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
-                        class="me-3 rounded" alt="" />
-                    <div>
-                        <p class="small-news-title">Tin ngắn 1 - tiêu đề ngắn gọn</p>
-                        <a href="#" class="text-danger small">Xem thêm</a>
-                    </div>
-                </div>
-                <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
-                    <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
-                        class="me-3 rounded" alt="" />
-                    <div>
-                        <p class="small-news-title">Tin ngắn 2 - tiêu đề ngắn gọn</p>
-                        <a href="#" class="text-danger small">Xem thêm</a>
-                    </div>
-                </div>
-                <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
-                    <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
-                        class="me-3 rounded" alt="" />
-                    <div>
-                        <p class="small-news-title">Tin ngắn 3 - tiêu đề ngắn gọn</p>
-                        <a href="#" class="text-danger small">Xem thêm</a>
-                    </div>
-                </div>
-                <div class="d-flex small-news bg-white rounded p-2 shadow-sm">
-                    <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
-                        class="me-3 rounded" alt="" />
-                    <div>
-                        <p class="small-news-title">Tin ngắn 4 - tiêu đề ngắn gọn</p>
-                        <a href="#" class="text-danger small">Xem thêm</a>
-                    </div>
-                </div>
+                <?php
+                endwhile;
+                wp_reset_postdata();
+            else:
+                echo '<p>Không có tin tức nào.</p>';
+            endif;
+            ?>
             </div>
-
         </div>
     </div>
 
-    <!-- Lọc theo năm -->
-    <div class="filter-year">
+
+    <!-- Bộ lọc theo năm -->
+    <div class="filter-year mb-4">
         <h5>Lọc theo năm</h5>
-        <select class="form-select form-select-sm" aria-label="Lọc theo năm">
-            <option selected>Chọn năm</option>
-            <option value="2025">2025</option>
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
+        <select id="year-filter" class="form-select form-select-sm">
+            <option value="">Chọn năm</option>
+            <?php
+    $current_year = date('Y');
+    for ($i = $current_year; $i >= 2022; $i--) {
+      echo "<option value='$i'>$i</option>";
+    }
+    ?>
         </select>
     </div>
 
-    <!-- Tin tức khác (carousel 5 tin/slide) -->
+    <!-- Kết quả tin tức sẽ thay đổi ở đây -->
+    <div id="news-results">
+        <p>Vui lòng chọn năm để hiển thị tin tức.</p>
+    </div>
+
+
+    <!-- Tin tức khác (carousel 4 tin/slide) -->
     <h2 class="section-title">Tin tức khác</h2>
-    <div id="newsCarousel" class="carousel slide" data-bs-ride="carousel">
-        <!-- <div class="carousel-indicator">
-            <button type="button" data-bs-target="#newsCarousel" data-bs-slide-to="0" class="active" aria-current="true"
-                aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#newsCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
-        </div> -->
-        <div class="carousel-inner">
-            <!-- Slide 1 -->
-            <div class="carousel-item active">
-                <div class="row">
-                    <!-- 5 tin mỗi slide -->
-                    <div class="col-md-2">
-                        <div class="card">
-                            <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
-                                class="card-img-top" alt="..." />
-                            <div class="card-body">
-                                <h5 class="card-title">Tiêu đề tin 1</h5>
-                                <p class="card-text">Nội dung tin tức sẽ tự động rút gọn...</p>
-                                <a href="#" class="btn btn-sm btn-outline-primary">Xem thêm</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="card">
-                            <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
-                                class="card-img-top" alt="..." />
-                            <div class="card-body">
-                                <h5 class="card-title">Tiêu đề tin 2</h5>
-                                <p class="card-text">Tin tức khác mô tả ngắn gọn cho người đọc...</p>
-                                <a href="#" class="btn btn-sm btn-outline-primary">Xem thêm</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="card">
-                            <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
-                                class="card-img-top" alt="..." />
-                            <div class="card-body">
-                                <h5 class="card-title">Tiêu đề tin 3</h5>
-                                <p class="card-text">Thông tin cần được trình bày rõ ràng ngắn gọn...</p>
-                                <a href="#" class="btn btn-sm btn-outline-primary">Xem thêm</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="card">
-                            <img src="https://tindungtaysaigon.com/quanly/uploads/post/medium/7451746500283.jpg"
-                                class="card-img-top" alt="..." />
-                            <div class="card-body">
-                                <h5 class="card-title">Tiêu đề tin 4</h5>
-                                <p class="card-text">Rút gọn nội dung hiển thị giúp tăng trải nghiệm...</p>
-                                <a href="#" class="btn btn-sm btn-outline-primary">Xem thêm</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="card">
-                            <img src="https://via.placeholder.com/400x250" class="card-img-top" alt="..." />
-                            <div class="card-body">
-                                <h5 class="card-title">Tiêu đề tin 5</h5>
-                                <p class="card-text">Chi tiết nội dung ở trang riêng, phần này chỉ tóm tắt...</p>
-                                <a href="#" class="btn btn-sm btn-outline-primary">Xem thêm</a>
-                            </div>
+    <div id="newsCarousel" class="carousel slide" ">
+        <div class=" carousel-inner">
+        <?php
+        $args = array(
+            'post_type' => 'post',
+            'posts_per_page' => -1, // Lấy tất cả bài viết
+            'orderby' => 'date',
+            'order' => 'DESC'
+        );
+        $query = new WP_Query($args);
+        if ($query->have_posts()):
+            $posts = $query->posts;
+            $chunks = array_chunk($posts, 4);
+            foreach ($chunks as $index => $chunk):
+        ?>
+        <div class="carousel-item <?php echo $index === 0 ? 'active' : ''; ?>">
+            <div class="row news">
+                <?php foreach ($chunk as $post):
+                    setup_postdata($post); ?>
+                <div class="col-md-2  ">
+                    <div class="card news-item-card h-100">
+                        <?php if (has_post_thumbnail()): ?>
+                        <a href="<?php the_permalink(); ?>">
+                            <?php the_post_thumbnail('medium', ['class' => 'card-img-top']); ?>
+                        </a>
+                        <?php else: ?>
+                        <img src="https://via.placeholder.com/400x250" class="card-img-top" alt="No image">
+                        <?php endif; ?>
+                        <div class="card-body d-flex flex-column">
+                            <h6 class="card-title"><?php the_title(); ?></h6>
+                            <p class="card-text small"><?php echo wp_trim_words(get_the_excerpt(), 15, '...'); ?>
+                            </p>
+                            <a href="<?php the_permalink(); ?>" class="btn btn-sm btn-outline-primary mt-auto">Xem
+                                thêm</a>
                         </div>
                     </div>
                 </div>
+                <?php endforeach; wp_reset_postdata(); ?>
             </div>
-
-
         </div>
-
-        <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon bg-dark rounded-circle"></span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel" data-bs-slide="next">
-            <span class="carousel-control-next-icon bg-dark rounded-circle"></span>
-        </button>
+        <?php endforeach; endif; ?>
     </div>
+
+    <button class="carousel-control-prev" type="button" data-bs-target="#newsCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon bg-dark rounded-circle"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#newsCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon bg-dark rounded-circle"></span>
+    </button>
 </div>
+
+</div>
+<script>
+jQuery(document).ready(function($) {
+    $('#year-filter').on('change', function() {
+        var year = $(this).val();
+
+        $.ajax({
+            url: my_ajax_obj.ajax_url,
+            type: 'POST',
+            data: {
+                action: 'filter_news_by_year',
+                year: year
+            },
+            success: function(response) {
+                // Thay thế phần carousel-inner bằng kết quả trả về
+                $('#newsCarousel .carousel-inner').replaceWith(response);
+
+                // Khởi tạo lại carousel Bootstrap 5
+                var carouselEl = document.querySelector('#newsCarousel');
+                var carousel = bootstrap.Carousel.getInstance(carouselEl);
+
+                if (carousel) {
+                    carousel.dispose();
+                }
+
+                new bootstrap.Carousel(carouselEl, {
+                    interval: false
+                });
+            },
+            error: function() {
+                alert('Lỗi khi tải tin tức.');
+            }
+        });
+    });
+});
+</script>
+
 
 <?php
 get_footer();  // Gọi file footer.php

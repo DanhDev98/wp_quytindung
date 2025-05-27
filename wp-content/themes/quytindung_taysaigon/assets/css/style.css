@@ -1854,7 +1854,7 @@ ul li {
 
 /* thanh cuộn phải tin tức */
 .news-scrollable {
-  max-height: 500px;
+  max-height: 600px !important;
   /* hoặc chiều cao bạn muốn */
   overflow-y: auto;
   padding-right: 8px;
@@ -1871,3 +1871,149 @@ ul li {
 }
 
 /* test new */
+.news{
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 50px;
+  
+}
+
+.card.news-item-card{
+  width: 250px;
+  max-width: 350px;
+  margin-bottom: 20px;
+  transition: transform 0.3s ease;
+}
+
+.btn-more{
+  width: 300px;
+  display: flex;
+  justify-content: center;
+  margin: 20px auto;
+}
+
+.btn-more:hover {
+  transform: scale(1.05);
+  color: #222;
+}
+
+/* box search */
+.search-box-container {
+  position: absolute;
+  top: 60px; /* điều chỉnh tùy theo chiều cao header */
+  right: 0;
+  display: none;
+  background: white;
+  border-radius: 10px;
+  padding: 10px;
+  z-index: 1000;
+  width: 600px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: all 0.3s ease-in-out;
+  flex-direction: row;
+  align-items: center;
+}
+.search-box-container form {
+  display: flex;
+  width: 100%;
+}
+
+.search-box-container input {
+  flex: 1;
+}
+
+@media(max-width: 992px) {
+  .search-box-container {
+    width: 100%;
+    right: 0;
+    left: 0;
+    top: 100%;
+    padding: 15px;
+  }
+}
+
+/* page search */
+
+.search-box {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.search-box input {
+  flex: 1;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.search-box button {
+  padding: 10px 20px;
+  background-color: #800000;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.sort {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.sort button {
+  background-color: #800000;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.results-count {
+  margin: 10px 0;
+  font-style: italic;
+}
+
+.result-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.result-item img {
+  width: 60px;
+  height: auto;
+}
+
+.result-info a {
+  color: #800000;
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-decoration: none;
+}
+
+.result-info p {
+  font-style: italic;
+  color: #444;
+  margin: 5px 0 0 0;
+  font-size: 0.95rem;
+}
+
+.pagination .page-numbers {
+  display: inline-block;
+  margin: 0 5px;
+  padding: 8px 12px;
+  background-color: #f8f9fa;
+  color: #800000;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.pagination .page-numbers.current {
+  background-color: #ce9233;
+  color: #fff;
+  font-weight: bold;
+}
